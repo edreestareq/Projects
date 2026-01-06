@@ -1,0 +1,177 @@
+main.dart
+import 'package:flutter/material.dart';
+import 'home_page.dart';
+import 'input_page.dart';
+import 'display_page.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (_) => HomePage());
+        }
+
+        if (settings.name == '/input') {
+          return MaterialPageRoute(builder: (_) => InputPage());
+        }
+
+        if (settings.name == '/display') {
+          final args = settings.arguments as Map<String, String>;
+          return MaterialPageRoute(
+            builder: (_) => DisplayPage(
+              name: args['name']!,
+              email: args['email']!,
+            ),
+          );
+        }
+        return null;
+      },
+    );
+  }
+}
+Home Page
+import 'package:flutter/material.dart';
+import 'home_page.dart';
+import 'input_page.dart';
+import 'display_page.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (_) => HomePage());
+        }
+
+        if (settings.name == '/input') {
+          return MaterialPageRoute(builder: (_) => InputPage());
+        }
+
+        if (settings.name == '/display') {
+          final args = settings.arguments as Map<String, String>;
+          return MaterialPageRoute(
+            builder: (_) => DisplayPage(
+              name: args['name']!,
+              email: args['email']!,
+            ),
+          );
+        }
+        return null;
+      },
+    );
+  }
+}
+Input Pageimport 'package:flutter/material.dart';
+
+class InputPage extends StatefulWidget {
+  @override
+  _InputPageState createState() => _InputPageState();
+}
+
+class _InputPageState extends State<InputPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+  void submit() {
+    if (nameController.text.isEmpty ||
+        emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Please fill all fields")));
+      return;
+    }
+
+    Navigator.pushNamed(
+      context,
+      '/display',
+      arguments: {
+        'name': nameController.text,
+        'email': emailController.text,
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Input Page")),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: "Name"),
+            ),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: "Email"),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: submit,
+              child: Text("Submit"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+Display Page
+import 'package:flutter/material.dart';
+
+class DisplayPage extends StatelessWidget {
+  final String name;
+  final String email;
+
+  DisplayPage({required this.name, required this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Display Page")),
+      body: GestureDetector(
+        onHorizontalDragEnd: (_) {
+          Navigator.pop(context);
+        },
+        child: Center(
+          child: Container(
+            width: 250,
+            height: 200,
+            color: Colors.greenAccent,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  email,
+                  style: TextStyle(fontSize: 18, color: Colors.blue),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
